@@ -1,0 +1,33 @@
+# How often to poll process list and update their oom_score_adj.
+poll_interval = '3s'
+
+# Minimum and maximum oom_score_adj values to use.
+min_oom_score_adjust = 100
+max_oom_score_adjust = 900
+
+# These defaults are used in all rules where not specified explicitly.
+# This means that choomd will only adjust processes owned by the user 'futpib'.
+[rules.default]
+owner_user_name = [ 'futpib' ]
+
+# Processes with same badness score are not adjusted with respect to each other.
+# So these two are more or less equally likely to get killed.
+[rules.firefox]
+command_line_file_name = [ 'firefox', 'firefox-bin' ]
+badness_score = 10
+
+[rules.chromium]
+command_line_file_name = [ 'chromium', 'chromium-browser', 'chrome', 'chrome-browser' ]
+badness_score = 10
+
+[rules.emacs]
+command_line_file_name = [ 'emacs' ]
+badness_score = 5
+
+
+# Processes that do not match any of the rules get badness_score = 0
+
+# Avoid killing the window manager.
+[rules.xmonad]
+command_line_file_name = [ 'xmonad', 'xmonad-x86_64-linux' ]
+badness_score = -10
