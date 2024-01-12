@@ -1,0 +1,9 @@
+[Unit]
+Description=Adjust process OOM-killer scores
+Documentation=https://github.com/futpib/choomd
+
+[Service]
+ExecStart=/usr/bin/choomd
+
+[Install]
+WantedBy=default.target

@@ -1,33 +1,80 @@
 # How often to poll process list and update their oom_score_adj.
 poll_interval = '3s'
 
-# Minimum and maximum oom_score_adj values to use.
-min_oom_score_adjust = 100
-max_oom_score_adjust = 900
+# Uppercase rule names are reserved, the DEFAULT is the only one supported now.
 
 # These defaults are used in all rules where not specified explicitly.
-# This means that choomd will only adjust processes owned by the user 'futpib'.
-[rules.default]
-owner_user_name = [ 'futpib' ]
+# This means that choomd will only adjust processes owned by the user 'futpib'
+# (by the user with uid 1000).
+[rules.DEFAULT]
+#owner_user_name = [ 'futpib' ]
+owner_user_id = [ 1000 ]
 
-# Processes with same badness score are not adjusted with respect to each other.
-# So these two are more or less equally likely to get killed.
+# Rules are applied in order, first match wins.
+# String values except for owner_user_name are glob patterns.
+
+# See `rules.rust-analyzer` for a proper way to do this.
+# Example match on full path to binary:
+#[rules.rust-analyzer-example-full-path]
+#command_line_file_path = [ '/home/futpib/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer' ]
+#oom_score_adj = 500
+
+# See `rules.rust-analyzer` for a proper way to do this.
+# Example glob match on path to binary:
+#[rules.rust-analyzer-example-glob]
+#command_line_file_path = [ '**/rust-analyzer' ]
+#oom_score_adj = 500
+
+[rules.rust-analyzer]
+command_line_file_name = [ 'rust-analyzer' ]
+oom_score_adj = 500
+
+[rules.node-tsserver-node-modules]
+command_line_file_name = [ 'node' ]
+command_line_argument = [ '**/tsserver.js' ]
+current_working_directory = [ '**/node_modules/**' ]
+oom_score_adj = 600
+
+[rules.node-tsserver]
+command_line_file_name = [ 'node' ]
+command_line_argument = [ '**/tsserver.js' ]
+oom_score_adj = 500
+
+[rules.telegram-desktop]
+command_line_file_name = [ 'telegram-desktop' ]
+oom_score_adj = 500
+
+[rules.firefox-contentproc]
+# Plain text explanation:
+#   if:
+#     - command line filename (without path) is either:
+#       - `firefox`
+#       - OR `firefox-bin`
+#     - AND one of command line arguments is `-contentproc`
+#     - AND (from rules.DEFAULT) owner user name is `futpib`
+#   then:
+#     - set oom_score_adj to 450
+command_line_file_name = [ 'firefox', 'firefox-bin' ]
+command_line_argument = [ '-contentproc' ]
+oom_score_adj = 500
+
 [rules.firefox]
 command_line_file_name = [ 'firefox', 'firefox-bin' ]
-badness_score = 10
+oom_score_adj = 450
+
+[rules.chromium-renderer]
+command_line_file_name = [ 'chromium', 'chromium-browser', 'chrome', 'chrome-browser' ]
+command_line_argument = [ '--type=renderer' ]
+oom_score_adj = 500
 
 [rules.chromium]
 command_line_file_name = [ 'chromium', 'chromium-browser', 'chrome', 'chrome-browser' ]
-badness_score = 10
+oom_score_adj = 450
 
 [rules.emacs]
 command_line_file_name = [ 'emacs' ]
-badness_score = 5
+oom_score_adj = 400
 
-
-# Processes that do not match any of the rules get badness_score = 0
-
-# Avoid killing the window manager.
 [rules.xmonad]
 command_line_file_name = [ 'xmonad', 'xmonad-x86_64-linux' ]
-badness_score = -10
+oom_score_adj = 100
