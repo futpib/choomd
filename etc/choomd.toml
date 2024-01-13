@@ -51,9 +51,9 @@ oom_score_adj = 500
 #       - `firefox`
 #       - OR `firefox-bin`
 #     - AND one of command line arguments is `-contentproc`
-#     - AND (from rules.DEFAULT) owner user name is `futpib`
+#     - AND (from rules.DEFAULT) owner user id is 1000
 #   then:
-#     - set oom_score_adj to 450
+#     - set oom_score_adj to 500
 command_line_file_name = [ 'firefox', 'firefox-bin' ]
 command_line_argument = [ '-contentproc' ]
 oom_score_adj = 500
