@@ -11,14 +11,16 @@ Arch Linux: https://aur.archlinux.org/packages/choomd-git
 Edit `/etc/choomd.toml` to your liking, for example:
 
 ```toml
+# Sacrifice firefox tabs before the browser
+
 [rules.firefox-contentproc]
 command_line_file_name = [ 'firefox', 'firefox-bin' ]
 command_line_argument = [ '-contentproc' ]
-oom_score_adj = 450
+oom_score_adj = 500
 
 [rules.firefox]
 command_line_file_name = [ 'firefox', 'firefox-bin' ]
-oom_score_adj = 500
+oom_score_adj = 450
 ```
 
 More on configuration here: https://github.com/futpib/choomd/blob/master/etc/choomd.toml
