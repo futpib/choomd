@@ -62,10 +62,9 @@ fn get_process_snapshots() -> Vec<ProcessSnapshot> {
 }
 
 fn main_loop(poll_interval: Duration, rules: Vec<Rule>) {
-    let mut skipped_process_ids = BTreeSet::<i32>::new();
-
     loop {
         let process_snapshots = get_process_snapshots();
+        let mut skipped_process_ids = BTreeSet::<i32>::new();
 
         for process_snapshot in process_snapshots {
             let matching_rule = rules.iter().find(|rule| rule.matches(&process_snapshot));

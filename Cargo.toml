@@ -1,6 +1,6 @@
 [package]
 name = "choomd"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["futpib"]
 edition = "2018"
 
