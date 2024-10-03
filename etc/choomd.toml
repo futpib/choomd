@@ -4,11 +4,11 @@ poll_interval = '3s'
 # Uppercase rule names are reserved, the DEFAULT is the only one supported now.
 
 # These defaults are used in all rules where not specified explicitly.
-# This means that choomd will only adjust processes owned by the user 'futpib'
-# (by the user with uid 1000).
 [rules.DEFAULT]
-#owner_user_name = [ 'futpib' ]
+# Choomd will only adjust processes owned by the user with id 1000 (default for first non-privileged user).
 owner_user_id = [ 1000 ]
+# May also filter by user name, but this is less portable as user names differ between systems
+#owner_user_name = [ 'futpib' ]
 
 # Rules are applied in order, first match wins.
 # String values except for owner_user_name are glob patterns.
