@@ -41,7 +41,7 @@ command_line_argument = [ '**/tsserver.js' ]
 oom_score_adj = 500
 
 [rules.telegram-desktop]
-command_line_file_name = [ 'telegram-desktop' ]
+command_line_file_name = [ 'telegram-desktop', 'Telegram' ]
 oom_score_adj = 500
 
 [rules.firefox-contentproc]
