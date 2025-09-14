@@ -8,9 +8,9 @@ use std::{
 
 use humantime::parse_duration;
 use log::{debug, error};
-use rule::Rule;
 use process_snapshot::ProcessSnapshot;
 use procfs::process::all_processes;
+use rule::Rule;
 
 use clap::Parser;
 use users::get_user_by_name;

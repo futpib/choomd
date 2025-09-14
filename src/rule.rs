@@ -11,7 +11,11 @@ pub struct Rule {
     pub oom_score_adj: i32,
 }
 
-fn rule_matches_generic<T: Eq>(rule_values: &Vec<T>, process_snapshot_values: &Vec<T>, predicate: fn(&T, &T) -> bool) -> bool {
+fn rule_matches_generic<T: Eq>(
+    rule_values: &Vec<T>,
+    process_snapshot_values: &Vec<T>,
+    predicate: fn(&T, &T) -> bool,
+) -> bool {
     if rule_values.is_empty() {
         return true;
     }
@@ -27,16 +31,27 @@ fn rule_matches_generic<T: Eq>(rule_values: &Vec<T>, process_snapshot_values: &V
     })
 }
 
-fn rule_matches_generic_glob(rule_values: &Vec<String>, process_snapshot_values: &Vec<String>) -> bool {
-    rule_matches_generic(rule_values, process_snapshot_values, |process_snapshot_value, rule_value| {
-        glob::Pattern::new(rule_value).unwrap().matches(process_snapshot_value)
-    })
+fn rule_matches_generic_glob(
+    rule_values: &Vec<String>,
+    process_snapshot_values: &Vec<String>,
+) -> bool {
+    rule_matches_generic(
+        rule_values,
+        process_snapshot_values,
+        |process_snapshot_value, rule_value| {
+            glob::Pattern::new(rule_value)
+                .unwrap()
+                .matches(process_snapshot_value)
+        },
+    )
 }
 
 fn rule_matches_generic_eq<T: Eq>(rule_values: &Vec<T>, process_snapshot_values: &Vec<T>) -> bool {
-    rule_matches_generic(rule_values, process_snapshot_values, |process_snapshot_value, rule_value| {
-        process_snapshot_value == rule_value
-    })
+    rule_matches_generic(
+        rule_values,
+        process_snapshot_values,
+        |process_snapshot_value, rule_value| process_snapshot_value == rule_value,
+    )
 }
 
 impl Rule {
@@ -120,7 +135,10 @@ impl Rule {
     fn matches_current_working_directory(&self, process_snapshot: &ProcessSnapshot) -> bool {
         rule_matches_generic_glob(
             &self.current_working_directory,
-            &vec![process_snapshot.current_working_directory.to_string_lossy().to_string()],
+            &vec![process_snapshot
+                .current_working_directory
+                .to_string_lossy()
+                .to_string()],
         )
     }
 
@@ -148,7 +166,11 @@ mod tests {
         let tsserver_process_snapshot = ProcessSnapshot {
             pid: 1,
             uid: 1,
-            command_line: "/usr/bin/node /home/futpib/code/whatever/node_modules/typescript/lib/tsserver.js".split(" ").map(|s| s.to_string()).collect(),
+            command_line:
+                "/usr/bin/node /home/futpib/code/whatever/node_modules/typescript/lib/tsserver.js"
+                    .split(" ")
+                    .map(|s| s.to_string())
+                    .collect(),
             current_working_directory: PathBuf::from("/home/futpib/code/whatever"),
             oom_score: 1,
             oom_score_adjust: 1,
